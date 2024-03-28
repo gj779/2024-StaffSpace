@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>424087461272-uo3popm9u2r4r31l24vkl3k979pmicl9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.424087461272-uo3popm9u2r4r31l24vkl3k979pmicl9</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>424087461272-cd8kf0ig85b5ei755m5nb0b78blq09nn.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCuu0IIWCbmCDaYI1tuiOxBJQehPY4ZCAM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>424087461272</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.staffspace.app</string>
+	<key>PROJECT_ID</key>
+	<string>react-native-staffspace</string>
+	<key>STORAGE_BUCKET</key>
+	<string>react-native-staffspace.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:424087461272:ios:9f208e715f25abcfcb9fed</string>
+</dict>
+</plist>

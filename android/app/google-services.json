@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "424087461272",
+    "project_id": "react-native-staffspace",
+    "storage_bucket": "react-native-staffspace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424087461272:android:69f54a1939ea39a5cb9fed",
+        "android_client_info": {
+          "package_name": "com.staffspace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "424087461272-cd8kf0ig85b5ei755m5nb0b78blq09nn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.staffspace",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "424087461272-tc7h134veusfiuen2qfbm76nul679cr5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmxmQvMD8JH0OadP_ejNFfL3VWJG21bI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "424087461272-tc7h134veusfiuen2qfbm76nul679cr5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
