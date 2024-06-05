@@ -1,22 +1,29 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
-import {FilterButton, FilterDropdown, RegularText} from '../../../components';
-import {HomeHeader, LineHorizontal} from '../../../components';
-import {Spacer, TextInputSearch, Wrapper} from '../../../components';
-import {MainWrapper, RenderHomeFeed, RowWrapper} from '../../../components';
-import {colors, HandleFavourites, routes, sizes} from '../../../services';
-import {totalSize, width} from 'react-native-dimension';
-import {useDispatch, useSelector} from 'react-redux';
-import {MenuTrigger, renderers} from 'react-native-popup-menu';
-import {Menu, MenuOptions, MenuOption} from 'react-native-popup-menu';
-import {all_jobs} from '../../../redux/actions';
-import {getCitybyStateCountry, getStatebyCountry} from '../../../backend/api';
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
+import { FilterButton, FilterDropdown, RegularText } from "../../../components";
+import { HomeHeader, LineHorizontal } from "../../../components";
+import { Spacer, TextInputSearch, Wrapper } from "../../../components";
+import { MainWrapper, RenderHomeFeed, RowWrapper } from "../../../components";
+import { colors, HandleFavourites, routes, sizes } from "../../../services";
+import { totalSize, width } from "react-native-dimension";
+import { useDispatch, useSelector } from "react-redux";
+import { MenuTrigger, renderers } from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuOption } from "react-native-popup-menu";
+import { addFavorites, all_jobs } from "../../../redux/actions";
+import { getCitybyStateCountry, getStatebyCountry } from "../../../backend/api";
+import {
+  getAllOfCollection,
+  getDocByKeyValue,
+  getFavoritesList,
+} from "../../../backend/utility";
+import { useIsFocused } from "@react-navigation/native";
 
-const Home = ({navigation}) => {
-  const user_redux = useSelector(state => state.user);
-  const favorites_list = useSelector(state => state.favorites);
-  const jobs_redux = useSelector(state => state?.allJobs);
+const Home = ({ navigation }) => {
+  const user_redux = useSelector((state) => state.user);
+  const favorites_list = useSelector((state) => state.favorites);
+  const jobs_redux = useSelector((state) => state?.allJobs);
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const [ex, setEx] = useState();
   const [feedItems, setFeedItems] = useState(jobs_redux);
   const [feedItems1, setFeedItems1] = useState(jobs_redux);
@@ -24,17 +31,42 @@ const Home = ({navigation}) => {
   const [feedItems2, setFeedItems2] = useState([]);
   const [feedItems3, setFeedItems3] = useState([]);
 
-  const [search_query, setSearchQuery] = useState('');
+  const [search_query, setSearchQuery] = useState("");
   const [user, setUser] = useState(user_redux);
   const [favs, setFavs] = useState(favorites_list);
 
   const [stateData, setStateData] = useState([]);
   const [selectState, setSelectState] = useState({});
   const [cityData, setcityData] = useState([]);
-  const [selectcity, setselectCity] = useState('');
+  const [selectcity, setselectCity] = useState("");
+
+  const getAllData = async () => {
+    try {
+      if (user?.userType == "Applicant") {
+        const res = await getAllOfCollection("PostedJobs");
+        dispatch(all_jobs(res));
+      } else {
+        const res = await getDocByKeyValue(
+          "PostedJobs",
+          "user.user_id",
+          user?.user_id
+        );
+        dispatch(all_jobs(res));
+      }
+      await getFavoritesList("Favorites", "likes", user?.user_id).then(
+        (res) => {
+          dispatch(addFavorites(res));
+        }
+      );
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getAllData();
+  }, [isFocused]);
 
   const reset = () => {
-    setselectCity('');
+    setselectCity("");
     setSelectState({});
     setStateData([]);
     setcityData([]);
@@ -45,8 +77,8 @@ const Home = ({navigation}) => {
 
   const getStateData = async () => {
     try {
-      let {states} = await getStatebyCountry(
-        user_redux.location?.country?.name,
+      let { states } = await getStatebyCountry(
+        user_redux.location?.country?.name
       );
       if (states?.length > 0) {
         setStateData(states);
@@ -54,17 +86,17 @@ const Home = ({navigation}) => {
         setStateData([user_redux.location?.country]);
       }
     } catch (error) {
-      if (error.msg == 'country not found') {
+      if (error.msg == "country not found") {
         setStateData([user_redux.location?.country]);
       }
     }
   };
 
-  const getCityData = async state => {
+  const getCityData = async (state) => {
     try {
       let city = await getCitybyStateCountry(
         user_redux.location?.country?.name,
-        state?.name || user_redux.location?.state?.name,
+        state?.name || user_redux.location?.state?.name
       );
       if (city?.length > 0) {
         setcityData(city);
@@ -72,7 +104,7 @@ const Home = ({navigation}) => {
         setcityData([state?.name || user_redux.location?.state?.name]);
       }
     } catch (error) {
-      if (['country not found', 'state not found'].includes(error.msg)) {
+      if (["country not found", "state not found"].includes(error.msg)) {
         setcityData([state?.name || user_redux.location?.state?.name]);
       }
     }
@@ -107,11 +139,11 @@ const Home = ({navigation}) => {
       setFeedItems,
       dispatch,
       all_jobs,
-      setEx,
+      setEx
     );
   };
 
-  const search_data = text => {
+  const search_data = (text) => {
     setSearchQuery(text);
     let jobs_search = [];
 
@@ -141,48 +173,48 @@ const Home = ({navigation}) => {
       setFeedItems(jobs_search);
     }
   };
-  const HandleFilters = value => {
+  const HandleFilters = (value) => {
     let data = feedItems3.length > 0 ? feedItems3 : feedItems1;
     let filteredData = [];
 
-    if (value == '1') {
+    if (value == "1") {
       setFeedItems(data);
       setFeedItems2([]);
-    } else if (value == '2') {
-      filteredData = data.filter(post => post.user.userType == 'Event');
+    } else if (value == "2") {
+      filteredData = data.filter((post) => post.user.userType == "Event");
       setFeedItems(filteredData);
       setFeedItems2(filteredData);
-    } else if (value == '3') {
-      filteredData = data.filter(post => post.user.userType == 'Resturant');
+    } else if (value == "3") {
+      filteredData = data.filter((post) => post.user.userType == "Resturant");
       setFeedItems(filteredData);
       setFeedItems2(filteredData);
-    } else if (value == '4') {
-      filteredData = data.filter(post => post.JobType == 'Full Time');
+    } else if (value == "4") {
+      filteredData = data.filter((post) => post.JobType == "Full Time");
       setFeedItems(filteredData);
       setFeedItems2(filteredData);
-    } else if (value == '5') {
-      filteredData = data.filter(post => post.JobType == 'Part Time');
+    } else if (value == "5") {
+      filteredData = data.filter((post) => post.JobType == "Part Time");
       setFeedItems(filteredData);
       setFeedItems2(filteredData);
     }
   };
 
   const HandleAddressFilters = (state, city) => {
-    let check = [null, undefined, ''];
+    let check = [null, undefined, ""];
     let data = feedItems2.length > 0 ? feedItems2 : feedItems1;
     let filteredData = [];
 
     if (city && check.includes(state)) {
-      filteredData = data.filter(post => post.address.city == city);
+      filteredData = data.filter((post) => post.address.city == city);
       setFeedItems(filteredData);
       setFeedItems3(filteredData);
     } else if (state && check.includes(city)) {
-      filteredData = data.filter(post => post.address.state.name == state);
+      filteredData = data.filter((post) => post.address.state.name == state);
       setFeedItems(filteredData);
       setFeedItems3(filteredData);
     } else if (state && city) {
       filteredData = data.filter(
-        post => post.address.state.name == state && post.address.city == city,
+        (post) => post.address.state.name == state && post.address.city == city
       );
       setFeedItems(filteredData);
       setFeedItems3(filteredData);
@@ -192,10 +224,10 @@ const Home = ({navigation}) => {
     }
   };
 
-  const CheckedOption = props => (
+  const CheckedOption = (props) => (
     <MenuOption
       value={props.value}
-      text={(props.checked ? '\u2713 ' : '') + props.text}
+      text={(props.checked ? "\u2713 " : "") + props.text}
     />
   );
 
@@ -205,60 +237,61 @@ const Home = ({navigation}) => {
         <HomeHeader
           onPressProfile={() => navigation.navigate(routes?.myProfileStack)}
           onPress={() => navigation.toggleDrawer()}
-          source={{uri: user?.profilePhoto}}
+          source={{ uri: user?.profilePhoto }}
         />
         <Spacer height={sizes.baseMargin} />
         {(Object.keys(selectState).length > 0 || selectcity) && (
           <RegularText
             onPress={reset}
             style={{
-              textAlign: 'right',
+              textAlign: "right",
               marginRight: 10,
               marginBottom: 4,
               color: colors.primary,
-            }}>
+            }}
+          >
             Reset
           </RegularText>
         )}
 
         <RowWrapper>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FilterDropdown
-              placeholder={'State'}
+              placeholder={"State"}
               data={stateData}
-              buttonTextAfterSelection={data => {
+              buttonTextAfterSelection={(data) => {
                 if (selectState?.name) {
                   return data?.name;
                 } else {
-                  return 'State';
+                  return "State";
                 }
               }}
-              rowTextForSelection={data => {
+              rowTextForSelection={(data) => {
                 return data?.name;
               }}
-              onSelect={async data => {
-                setselectCity('');
+              onSelect={async (data) => {
+                setselectCity("");
                 setSelectState(data);
                 getCityData(data);
               }}
             />
           </View>
-          <View style={{marginHorizontal: 5}} />
-          <View style={{flex: 1}}>
+          <View style={{ marginHorizontal: 5 }} />
+          <View style={{ flex: 1 }}>
             <FilterDropdown
-              placeholder={'City'}
+              placeholder={"City"}
               data={cityData}
-              buttonTextAfterSelection={data => {
+              buttonTextAfterSelection={(data) => {
                 if (selectcity) {
                   return data;
                 } else {
-                  return 'City';
+                  return "City";
                 }
               }}
-              rowTextForSelection={data => {
+              rowTextForSelection={(data) => {
                 return data;
               }}
-              onSelect={data => {
+              onSelect={(data) => {
                 setselectCity(data);
               }}
             />
@@ -269,15 +302,16 @@ const Home = ({navigation}) => {
           <Wrapper>
             <TextInputSearch
               value={search_query}
-              onChangeText={text => search_data(text)}
+              onChangeText={(text) => search_data(text)}
               placeholder="Search for jobs and events"
               width={width(77)}
             />
           </Wrapper>
           <Wrapper>
             <Menu
-              onSelect={value => HandleFilters(value)}
-              renderer={renderers.NotAnimatedContextMenu}>
+              onSelect={(value) => HandleFilters(value)}
+              renderer={renderers.NotAnimatedContextMenu}
+            >
               <MenuTrigger>
                 <FilterButton
                   iconName="filter-outline"
@@ -310,7 +344,7 @@ const Home = ({navigation}) => {
               idx: index,
             })
           }
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{ paddingBottom: 50 }}
         />
       </Wrapper>
     </MainWrapper>
@@ -347,11 +381,11 @@ const optionsStyles = {
     margin: 5,
   },
   optionTouchable: {
-    underlayColor: 'gold',
+    underlayColor: "gold",
     activeOpacity: 70,
   },
   optionText: {
     // color: 'brown',
-    alignSelf: 'center',
+    alignSelf: "center",
   },
 };

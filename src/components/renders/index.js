@@ -109,7 +109,10 @@ export const RenderMyJobs = ({ data, onPress }) => {
             feedImage={{ uri: item?.post_image }}
             titleDetails={item.postedBy?.firstName}
             detailText={item?.description}
-            locationText="Orlando, OR"
+            //locationText="Orlando, OR"
+            locationText={
+              item?.address?.city + ", " + item?.address?.state?.name
+            }
             isAproved={item?.status}
             statusButton={true}
             ratingText="4.5"

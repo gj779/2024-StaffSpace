@@ -53,11 +53,11 @@ const ContactUs = ({navigation}) => {
         <Wrapper flex={1} style={appStyles.mainContainer}>
           <MainHeader
             buttonSize={totalSize(3)}
-            // onPressBack={() => navigation.goBack()}
-            onPressBack={() => {
-              navigation.toggleDrawer();
-              Keyboard.dismiss();
-            }}
+            onPressBack={() => navigation.goBack()}
+            // onPressBack={() => {
+            //   navigation.toggleDrawer();
+            //   Keyboard.dismiss();
+            // }}
             title="Contact Us"
             statusBarBgColor={colors.primary}
           />

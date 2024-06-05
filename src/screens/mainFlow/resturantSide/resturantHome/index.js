@@ -1,62 +1,94 @@
-import {View, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
 import {
   ButtonColored,
   HomeHeader,
   MainWrapper,
   RenderHomeFeed,
   Wrapper,
-} from '../../../../components';
-import {appStyles, colors, routes} from '../../../../services';
-import {height, totalSize, width} from 'react-native-dimension';
-import {useDispatch, useSelector} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
-import {MenuOption} from 'react-native-popup-menu';
+} from "../../../../components";
+import { appStyles, colors, routes } from "../../../../services";
+import { height, totalSize, width } from "react-native-dimension";
+import { useDispatch, useSelector } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
+import { MenuOption } from "react-native-popup-menu";
+import {
+  getAllOfCollection,
+  getDocByKeyValue,
+} from "../../../../backend/utility";
+import { addFavorites, all_jobs } from "../../../../redux/actions";
 
-const ResturantHome = ({navigation}) => {
+const ResturantHome = ({ navigation }) => {
   const isFocused = useIsFocused();
-  const user_redux = useSelector(state => state.user);
-  const {navigate} = navigation;
+  const user_redux = useSelector((state) => state.user);
+  const { navigate } = navigation;
+  const dispatch = useDispatch();
+
   const [feedItems, setFeedItems] = useState([]);
   const [feedItems1, setFeedItems1] = useState([]);
-  const [search_query, setSearchQuery] = useState('');
-  const jobs_redux = useSelector(state => state?.allJobs);
+  const [search_query, setSearchQuery] = useState("");
+  const jobs_redux = useSelector((state) => state?.allJobs);
 
   useEffect(() => {
     setFeedItems(jobs_redux);
     setFeedItems1(jobs_redux);
   }, [jobs_redux]);
 
-  const HandleFilters = value => {
+  const getAllData = async () => {
+    try {
+      if (user_redux?.userType == "Applicant") {
+        const res = await getAllOfCollection("PostedJobs");
+        dispatch(all_jobs(res));
+      } else {
+        const res = await getDocByKeyValue(
+          "PostedJobs",
+          "user.user_id",
+          user_redux?.user_id
+        );
+        dispatch(all_jobs(res));
+      }
+      await getFavoritesList("Favorites", "likes", user_redux?.user_id).then(
+        (res) => {
+          dispatch(addFavorites(res));
+        }
+      );
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getAllData();
+  }, [isFocused]);
+
+  const HandleFilters = (value) => {
     let filteredData = [];
-    if (value == '1') {
+    if (value == "1") {
       setFeedItems(feedItems1);
-    } else if (value == '2') {
+    } else if (value == "2") {
       filteredData = feedItems1.filter(
-        post =>
+        (post) =>
           post.isActive == true ||
           (Date.parse(new Date()) > post.start_date &&
-            Date.parse(new Date() < post.end_date)),
+            Date.parse(new Date() < post.end_date))
       );
       setFeedItems(filteredData);
     } else {
       filteredData = feedItems1.filter(
-        post =>
+        (post) =>
           post.isActive !== true ||
           (Date.parse(new Date()) < post.start_date &&
-            Date.parse(new Date() > post.end_date)),
+            Date.parse(new Date() > post.end_date))
       );
       setFeedItems(filteredData);
     }
   };
-  const CheckedOption = props => (
+  const CheckedOption = (props) => (
     <MenuOption
       value={props.value}
-      text={(props.checked ? '\u2713 ' : '') + props.text}
+      text={(props.checked ? "\u2713 " : "") + props.text}
     />
   );
 
-  const search_data = text => {
+  const search_data = (text) => {
     setSearchQuery(text);
     let jobs_search = feedItems1?.filter(function (item) {
       const item_data =
@@ -71,7 +103,7 @@ const ResturantHome = ({navigation}) => {
     <MainWrapper>
       <Wrapper flex={1} style={appStyles.mainContainer}>
         <HomeHeader
-          source={{uri: user_redux?.profilePhoto}}
+          source={{ uri: user_redux?.profilePhoto }}
           onPressProfile={() => {
             navigation.navigate(routes.profile);
           }}
@@ -80,12 +112,12 @@ const ResturantHome = ({navigation}) => {
         {feedItems?.length < 1 && (
           <ButtonColored
             text={
-              'Create ' + (user_redux?.userType == 'Event' ? 'Event' : 'Job')
+              "Create " + (user_redux?.userType == "Event" ? "Event" : "Job")
             }
             buttonColor={colors.primary}
             buttonStyle={{
               width: width(80),
-              alignSelf: 'center',
+              alignSelf: "center",
               marginTop: height(32),
             }}
             onPress={() =>
@@ -129,13 +161,13 @@ const ResturantHome = ({navigation}) => {
                 </RowWrapper> */}
         {/* <Spacer height={sizes.TinyMargin} /> */}
         <RenderHomeFeed
-          onPressApplicants={props =>
-            navigate(routes.myProfile, {Data: props, isResturant: true})
+          onPressApplicants={(props) =>
+            navigate(routes.myProfile, { Data: props, isResturant: true })
           }
           onPressAll={(props, post_id) =>
-            navigate(routes.applicants, {postId: post_id})
+            navigate(routes.applicants, { postId: post_id })
           }
-          onPress={props =>
+          onPress={(props) =>
             navigate(routes.resturantProfile, {
               item: props,
               isResturant: true,
@@ -144,7 +176,7 @@ const ResturantHome = ({navigation}) => {
           }
           data={feedItems}
           type={true}
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{ paddingBottom: 50 }}
           // onPressApplicants={() => navigate(routes.applicants)}
         />
       </Wrapper>
@@ -168,11 +200,11 @@ const optionsStyles = {
     margin: 5,
   },
   optionTouchable: {
-    underlayColor: 'gold',
+    underlayColor: "gold",
     activeOpacity: 70,
   },
   optionText: {
     // color: 'brown',
-    alignSelf: 'center',
+    alignSelf: "center",
   },
 };

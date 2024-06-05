@@ -27,7 +27,7 @@ export const CheckBoxPrimary = props => {
 }
 
 export const CheckBoxFavorite = props => {
-    const { textStyle, containerStyle, text, checked, onPress, title, buttonBackground } = props
+    const { textStyle, containerStyle, text, checked, onPress, title, buttonBackground,fadded } = props
     const checkedIconName = 'heart'
     const uncheckedIconName = 'heart-outline'
     const checkboxIconType = 'ionicon'
@@ -36,7 +36,11 @@ export const CheckBoxFavorite = props => {
     const uncheckIconColor = colors.white
     return (
         <TouchableOpacity activeOpacity={.6} onPress={onPress}>
-            <Wrapper style={{ backgroundColor: buttonBackground ? buttonBackground : colors.appColorFaded, borderRadius: sizes.buttonMiniRadius, padding: 3 }}>
+            <Wrapper style={{ backgroundColor: buttonBackground ? buttonBackground : 
+            // colors.appColorFaded
+            colors.appColor4
+            ,
+                 borderRadius: sizes.buttonMiniRadius, padding: 3 }}>
                 <IconWithText
                     text={text}
                     iconName={checked ? checkedIconName : uncheckedIconName}

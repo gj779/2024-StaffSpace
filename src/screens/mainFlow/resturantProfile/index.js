@@ -252,7 +252,9 @@ const ResturantProfile = ({ navigation, route }) => {
               <BackArrowSquaredButton
                 size={totalSize(3)}
                 onPress={() => navigation.goBack()}
+                backgroundColor={colors.appColor4}
               />
+
               {!isResturant ? (
                 <CheckBoxFavorite
                   onPress={HandleIsLiked}

@@ -315,7 +315,7 @@ export const FeedCard = ({
               />
               <Spacer width={sizes.smallMargin} />
               <Wrapper>
-                <SmallTitle style={{ maxWidth: width(70) }}>{title}</SmallTitle>
+                <SmallTitle style={{ maxWidth: width(65) }}>{title}</SmallTitle>
                 {/* <RegularText>{titleDetails}</RegularText> */}
                 <Spacer height={sizes.smallMargin} />
                 <IconWithText
@@ -323,6 +323,7 @@ export const FeedCard = ({
                   iconName="location-outline"
                   tintColor={colors.primary}
                   iconSize={sizes.icons.medium}
+                  textStyle={{ maxWidth: width(60) }}
                 />
               </Wrapper>
             </RowWrapperBasic>

@@ -31,6 +31,8 @@ import ImagePicker from "react-native-image-crop-picker";
 import {
   saveData,
   uniqueID,
+  updateAppliedJobsProfilePhoto,
+  updatePostedJobsProfilePhoto,
   uploadProfileImage,
 } from "../../../backend/utility";
 import { signin } from "../../../redux/actions";
@@ -100,8 +102,18 @@ const EditProfile = ({ navigation }) => {
           SimpleToast.show("Profile Updated");
           navigation.goBack();
           Data.profilePhoto = img;
-          saveData("Users", user_redux.user_id, Data).catch((err) =>
-            setLoading(false)
+          saveData("Users", user_redux.user_id, Data).catch((err) => {
+            setLoading(false);
+          });
+          updatePostedJobsProfilePhoto(user_redux?.user_id, img).catch(
+            (err) => {
+              setLoading(false);
+            }
+          );
+          updateAppliedJobsProfilePhoto(user_redux?.user_id, img).catch(
+            (err) => {
+              setLoading(false);
+            }
           );
         })
         .catch((err) => setLoading(false));

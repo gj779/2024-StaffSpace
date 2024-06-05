@@ -552,4 +552,38 @@ export const deleteFCMToken = async () => {
   await firestore().collection("Users").doc(user_id).update({ fcm_token: "" });
 };
 
+export const updatePostedJobsProfilePhoto = async (userId, photoUrl) => {
+  const db = firebase.firestore();
+  const collectionName = "PostedJobs";
+  try {
+    const querySnapshot = await db
+      .collection(collectionName)
+      .where("user.user_id", "==", userId)
+      .get();
+
+    querySnapshot.forEach(async (doc) => {
+      await db.collection(collectionName).doc(doc.id).update({
+        "user.profilePhoto": photoUrl,
+      });
+    });
+  } catch (error) {}
+};
+
+export const updateAppliedJobsProfilePhoto = async (userId, photoUrl) => {
+  const db = firebase.firestore();
+  const collectionName = "AppliedJobs";
+  try {
+    const querySnapshot = await db
+      .collection(collectionName)
+      .where("postedBy.user_id", "==", userId)
+      .get();
+
+    querySnapshot.forEach(async (doc) => {
+      await db.collection(collectionName).doc(doc.id).update({
+        "postedBy.profilePhoto": photoUrl,
+      });
+    });
+  } catch (error) {}
+};
+
 export default firebase;
